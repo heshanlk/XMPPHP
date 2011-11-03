@@ -572,4 +572,35 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->event('vcard', $vcard_array);
   }
 
+    /**
+     * Checking if the given username exists and the given text password 
+     * is correct by trying to connect to and authenticate on xmpp server.
+     * @author del Rosario Ernesto <delrosario.ernesto@gmail.com>
+     * @return bool
+     */
+    public static function check_username_and_password($user = "", $password = "", $conf = array()) {
+        if (empty($user) || empty($password) || !isset($conf["host"]) || !isset($conf["port"]))
+            return null;
+        
+        $xmpp = new XMPPHP_XMPP(
+            $conf["host"], 
+            $conf["port"], 
+            $user, 
+            $password, 
+            $conf["resource"], 
+            $conf["server"], 
+            $conf["printlog"], 
+            $conf["loglevel"]
+        );
+        
+        try {
+            $xmpp->connect();
+            $xmpp->processUntil('session_start');
+            $xmpp->disconnect();
+            return true;
+        } catch(XMPPHP_Exception $e) {
+            return false;
+        }
+    }
+
 }
