@@ -187,6 +187,57 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 
     $this->send($out);
   }
+  
+    /**
+     * Register a new user
+     * @param string $username
+     * @param string $password 
+     */
+    public function register($username, $password = null){
+        if (!isset($password)) $password = $this->genRandomString(15);
+        $id = 'reg_' . $this->getID();
+        $xml = "<iq type='set' id='$id'>
+                    <query xmlns='jabber:iq:register'>
+                        <username>" . $username . "</username>
+                        <password>" . $password . "</password>
+                        <email></email>
+                        <name></name>
+                    </query>
+                </iq>";
+        $this->addIdHandler($id, 'register_new_user_handler');
+        $this->send($xml);
+    }
+
+    /**
+     * Handler for new user registration
+     * @param XML Object $xml
+     */
+    protected function register_new_user_handler($xml){
+        switch ($xml->attrs['type']) {
+            case 'error':
+                $this->event('new_user_registered', 'error');
+                break;
+            case 'result':
+                $query = $xml->sub('query');
+                $username='';
+                $password='';
+                if(!is_array($query->subs)) {
+                    foreach ($query->sub as $key => $value) {
+                        switch ($value->name) {
+                            case 'username':
+                                $username = $value->data;
+                                break;
+                            case 'password':
+                                $password = $value->data;
+                                break;
+                        }
+                    }
+                }
+                $this->event('new_user_registered', array('jid' => $username . "@{$this->server}", 'password' => $password));
+            default:
+                $this->event('new_user_registered', 'default');
+        }
+    }
 
   /**
    * Set Presence
