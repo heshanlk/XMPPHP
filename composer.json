@@ -1,0 +1,21 @@
+{
+    "name": "heidisoft/xmpphp",
+    "description": "XMPPHP is an elegant PHP library for XMPP (Jabber, Google Talk, Facebook etc).",
+    "homepage": "https://github.com/heidisoft/XMPPHP",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Heshan Wanigasooriya",
+            "email": "heshan@heidisoft.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.2"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
